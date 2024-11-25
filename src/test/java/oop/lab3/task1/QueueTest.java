@@ -13,7 +13,7 @@ public class QueueTest {
         queue.enqueue(2);
         assertEquals(2, queue.size());
         assertEquals(0, queue2.size());
-        assertTrue(queue.isEmpty());
+        assertTrue(queue2.isEmpty());
     }
 
     @Test
