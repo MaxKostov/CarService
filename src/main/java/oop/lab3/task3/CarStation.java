@@ -24,6 +24,15 @@ public class CarStation {
     }
 
     public void addCar(Car car) {
-        cars.enqueue(car);
+        if (cars.isEmpty()) {
+            cars.enqueue(car);
+            serveCars();
+        } else {
+            cars.enqueue(car);
+        }
+    }
+
+    public int getNumberOfCars() {
+        return cars.size();
     }
 }
