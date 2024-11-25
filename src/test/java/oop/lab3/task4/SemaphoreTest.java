@@ -13,10 +13,9 @@ public class SemaphoreTest {
 
     @Test
     public void testSemaphore() {
-        semaphore.add(car1);
-        semaphore.add(car2);
-        semaphore.add(car3);
-        semaphore.add(car4);
-        semaphore.navigateCars();
+        semaphore.navigateCars(car1);
+        semaphore.navigateCars(car2);
+        semaphore.navigateCars(car3);
+        semaphore.navigateCars(car4);
     }
 }
