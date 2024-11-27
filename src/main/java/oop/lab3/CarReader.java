@@ -11,8 +11,8 @@ import java.util.TimerTask;
 
 public class CarReader extends TimerTask {
     private int index;
-    private Semaphore sp;
-    private Timer timer;
+    private final Semaphore sp;
+    private final Timer timer;
 
     public CarReader(int startIndex, Semaphore sp, Timer timer) {
         this.index = startIndex;
@@ -33,7 +33,7 @@ public class CarReader extends TimerTask {
         try {
             carData = mapper.readTree(file);
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка чтения файла: " + file.getName(), e);
+            throw new RuntimeException("File reading error: " + file.getName(), e);
         }
 
         Car car = new Car(

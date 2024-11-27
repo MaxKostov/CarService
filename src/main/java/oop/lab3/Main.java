@@ -1,6 +1,5 @@
 package oop.lab3;
 
-import oop.lab3.task1.Queue;
 import oop.lab3.task4.Semaphore;
 
 import java.io.BufferedReader;
@@ -17,10 +16,13 @@ public class Main {
 
         Thread pythonThread = new Thread(() -> {
             try {
-                Process process = new ProcessBuilder(command, scriptPath).start();
+                ProcessBuilder processBuilder = new ProcessBuilder(command, scriptPath);
+                processBuilder.redirectErrorStream(true);
+                Process process = processBuilder.start();
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
+                        //System.out.println(line);
                         output.add(line);
                     }
                 }
@@ -35,6 +37,12 @@ public class Main {
         Semaphore sp = new Semaphore();
         timer.scheduleAtFixedRate(new CarReader(1, sp, timer), 0, 3000);
 
+        pythonThread.join();
+        sp.waitForAllThreads();
+
+        sp.showStatistics();
+        System.out.println("Expected statistics: ");
         System.out.println(output.getLast());
     }
 }
+

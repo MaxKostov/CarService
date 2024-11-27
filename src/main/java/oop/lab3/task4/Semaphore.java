@@ -6,15 +6,18 @@ import oop.lab3.task2.ElectricStation;
 import oop.lab3.task2.GasStation;
 import oop.lab3.task2.PeopleDinner;
 import oop.lab3.task2.RobotDinner;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Semaphore {
-    private CarStation carStation1 = new CarStation(new PeopleDinner(), new GasStation(), 1);
-    private CarStation carStation2 = new CarStation(new PeopleDinner(), new ElectricStation(), 2);
-    private CarStation carStation3 = new CarStation(new RobotDinner(), new GasStation(), 3);
-    private CarStation carStation4 = new CarStation(new RobotDinner(), new ElectricStation(),4);
+    private CarStation carStation1 = new CarStation(new PeopleDinner(), new GasStation(), 1, this);
+    private CarStation carStation2 = new CarStation(new PeopleDinner(), new ElectricStation(), 2, this);
+    private CarStation carStation3 = new CarStation(new RobotDinner(), new GasStation(), 3, this);
+    private CarStation carStation4 = new CarStation(new RobotDinner(), new ElectricStation(), 4, this);
+
+    private CopyOnWriteArrayList<Thread> stationThreads = new CopyOnWriteArrayList<>();
 
     public void navigateCars(Car car) {
-        if(car.isDining()) {
+        if (car.isDining()) {
             switch (car.getPassangers()) {
                 case "PEOPLE" -> {
                     switch (car.getType()) {
@@ -37,8 +40,7 @@ public class Semaphore {
                     }
                 }
             }
-        }
-        else {
+        } else {
             switch (car.getType()) {
                 case "GAS" -> {
                     if (carStation1.getNumberOfCars() <= carStation3.getNumberOfCars()) {
@@ -57,4 +59,27 @@ public class Semaphore {
             }
         }
     }
+
+
+    public void waitForAllThreads() throws InterruptedException {
+        for (Thread thread : stationThreads) {
+            thread.join();
+        }
+    }
+
+    public void addStationThread(Thread thread) {
+        stationThreads.add(thread);
+    }
+
+    public void showStatistics() {
+        System.out.println("=====================================");
+        System.out.println("       Today's Station Statistics     ");
+        System.out.println("=====================================");
+        System.out.printf("%-20s: %d\n", "Gas cars", GasStation.getGasCars());
+        System.out.printf("%-20s: %d\n", "Electric cars", ElectricStation.getElectricCars());
+        System.out.printf("%-20s: %d\n", "People", PeopleDinner.getPeople());
+        System.out.printf("%-20s: %d\n", "Robots", RobotDinner.getRobots());
+        System.out.println("=====================================");
+    }
+
 }

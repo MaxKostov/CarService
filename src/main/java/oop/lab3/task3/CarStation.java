@@ -4,6 +4,7 @@ import oop.lab3.Car;
 import oop.lab3.task1.Queue;
 import oop.lab3.task2.IDineable;
 import oop.lab3.task2.IRefuelable;
+import oop.lab3.task4.Semaphore;
 
 public class CarStation implements Runnable {
     private IDineable diningService;
@@ -12,11 +13,13 @@ public class CarStation implements Runnable {
     private Thread thread;
     private int stationId;
     private final Object queueLock = new Object();
+    private Semaphore semaphore;
 
-    public CarStation(IDineable diningService, IRefuelable refuelingService, int stationId) {
+    public CarStation(IDineable diningService, IRefuelable refuelingService, int stationId, Semaphore semaphore) {
         this.diningService = diningService;
         this.refuelingService = refuelingService;
         this.stationId = stationId;
+        this.semaphore = semaphore;
     }
 
     @Override
@@ -29,7 +32,6 @@ public class CarStation implements Runnable {
                         updateTerminal("Thread terminating...");
                         break;
                     }
-
                     car = cars.dequeue();
                 }
 
@@ -63,6 +65,7 @@ public class CarStation implements Runnable {
     private void startThread() {
         thread = new Thread(this);
         thread.start();
+        semaphore.addStationThread(thread);
     }
 
     public int getNumberOfCars() {
@@ -76,5 +79,6 @@ public class CarStation implements Runnable {
         System.out.flush();
     }
 }
+
 
 
