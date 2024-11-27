@@ -2,7 +2,7 @@ package oop.lab3;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import oop.lab3.task1.Queue;
+import oop.lab3.task4.Semaphore;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,12 +11,12 @@ import java.util.TimerTask;
 
 public class CarReader extends TimerTask {
     private int index;
-    private Queue<Car> queue;
+    private Semaphore sp;
     private Timer timer;
 
-    public CarReader(int startIndex, Queue<Car> queue, Timer timer) {
+    public CarReader(int startIndex, Semaphore sp, Timer timer) {
         this.index = startIndex;
-        this.queue = queue;
+        this.sp = sp;
         this.timer = timer;
     }
 
@@ -44,7 +44,7 @@ public class CarReader extends TimerTask {
                 carData.get("consumption").asInt()
         );
 
-        queue.enqueue(car);
+        sp.navigateCars(car);
         index++;
     }
 }

@@ -1,18 +1,17 @@
 package oop.lab3.task4;
 
 import oop.lab3.Car;
-import oop.lab3.task1.Queue;
+import oop.lab3.task3.CarStation;
 import oop.lab3.task2.ElectricStation;
 import oop.lab3.task2.GasStation;
 import oop.lab3.task2.PeopleDinner;
 import oop.lab3.task2.RobotDinner;
-import oop.lab3.task3.CarStation;
 
 public class Semaphore {
-    private CarStation carStation1 = new CarStation(new PeopleDinner(), new GasStation());
-    private CarStation carStation2 = new CarStation(new PeopleDinner(), new ElectricStation());
-    private CarStation carStation3 = new CarStation(new RobotDinner(), new GasStation());
-    private CarStation carStation4 = new CarStation(new RobotDinner(), new ElectricStation());
+    private CarStation carStation1 = new CarStation(new PeopleDinner(), new GasStation(), 1);
+    private CarStation carStation2 = new CarStation(new PeopleDinner(), new ElectricStation(), 2);
+    private CarStation carStation3 = new CarStation(new RobotDinner(), new GasStation(), 3);
+    private CarStation carStation4 = new CarStation(new RobotDinner(), new ElectricStation(),4);
 
     public void navigateCars(Car car) {
         if(car.isDining()) {

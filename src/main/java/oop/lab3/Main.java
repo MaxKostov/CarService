@@ -3,35 +3,38 @@ package oop.lab3;
 import oop.lab3.task1.Queue;
 import oop.lab3.task4.Semaphore;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
 import java.util.Timer;
 
 public class Main {
-    public static void main(String[] args) {
-        Queue<Car> generalQueue = new Queue<>();
+    public static void main(String[] args) throws InterruptedException {
+        String command = "python3";
+        String scriptPath = "script/generator.py";
+        LinkedList<String> output = new LinkedList<>();
 
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new CarReader(1, generalQueue, timer), 0, 3000);
-
-        Semaphore sp = new Semaphore();
-
-        Thread semaphoreThread = new Thread(() -> {
-            while (true) {
-                synchronized (generalQueue) {
-                    if (!generalQueue.isEmpty()) {
-                        Car car = generalQueue.dequeue();
-                        sp.navigateCars(car); // Распределяем машину
-                        System.out.println("Машина обработана: " + car);
+        Thread pythonThread = new Thread(() -> {
+            try {
+                Process process = new ProcessBuilder(command, scriptPath).start();
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        output.add(line);
                     }
                 }
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    System.out.println("Поток семафора завершён.");
-                    break;
-                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
 
-        semaphoreThread.start();
+        pythonThread.start();
+
+        Timer timer = new Timer();
+        Semaphore sp = new Semaphore();
+        timer.scheduleAtFixedRate(new CarReader(1, sp, timer), 0, 3000);
+
+        System.out.println(output.getLast());
     }
 }
